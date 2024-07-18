@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}Base Template{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="grid-container">
+        <header>
+            <img src="{% static 'images/Logo.png' %}" alt="Logo">
+        </header>
+
+        <nav>
+            <h2>Explore</h2>
+            <ul class="button-group">
+                <li><a href="{% url 'home' %}">Artist Library</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+            </ul>
+        </nav>
+
+        <figure>
+            {% block content %}
+            <!-- Default content if none provided -->
+            {% endblock %}
+        </figure>
+
+        <footer>
+            {% block footer %}
+            <!-- Default footer if none provided-->
+             <a href=""></a>
+            {% endblock %}
+        </footer>
+    </div>
+
+</body>
+
+</html>

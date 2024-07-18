@@ -1,0 +1,133 @@
+body {
+    background: linear-gradient(darkred, black);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+    'header header header'
+    'nav figure figure'
+    'nav figure figure'
+    'footer footer footer';
+    grid-template-columns: 1fr 11fr;
+}
+
+/* -----HEADER CONTENT----- */
+.grid-container header {
+    grid-area: header;
+    height: 20vh;
+    padding-bottom: 6px;
+}
+
+.grid-container header img {
+    position: relative;
+    object-position: top center;
+    max-height: 100%;
+}
+/* -----HEADER CONTENT----- */
+
+
+/* -----NAV CONTENT----- */
+.grid-container nav {
+    grid-area: nav;
+    width: 250px;
+    background-color: #333;
+    padding: 10px;
+}
+
+.grid-container nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.grid-container nav ul li {
+    margin-bottom: 10px;
+}
+
+.grid-container nav ul li a {
+    background-color: #D65555;
+    border: 1px solid #D65555;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.grid-container nav ul li a:hover {
+    background-color: #8e3e3e;
+}
+
+.grid-container nav h2 {
+    color: white;
+    padding-bottom: 10px;
+}
+/* -----NAV CONTENT----- */
+
+
+/* -----FIGURE CONTENT----- */
+.grid-container figure {
+    grid-area: figure;
+    height: 500px;
+    max-width: 100%;
+}
+
+.grid-container figure h1 {
+    color: white;
+}
+
+.grid-container figure h2 {
+    color: white;
+}
+
+.grid-container figure p {
+    color: white;
+}
+
+audio {
+    width: 100%;
+    height: 10%;
+}
+  
+audio::-webkit-media-controls-panel {
+    background-color: #ff0000b5;
+    opacity: 80%;
+}
+
+.grid-container figure .artist {
+    display: flex;
+}
+
+.grid-container figure .artist img {
+    height: 300px;
+    width: 300px;
+}
+
+.grid-container figure .artist p {
+    color: white;
+    text-align: left;
+}
+/* -----FIGURE CONTENT----- */
+
+
+/* -----FOOTER CONTENT----- */
+.grid-container footer a:link, a:visited, a:hover, a:active {
+    color: white;
+    text-decoration: none;
+}
+
+.grid-container footer a {
+    display: inline-block;
+    background-color: #444;
+    padding: 0px 5px;
+    transition: background-color 0.3s;
+}
+
+.grid-container footer {
+    grid-area: footer;
+    text-align: end;
+}
+/* -----FOOTER CONTENT----- */
