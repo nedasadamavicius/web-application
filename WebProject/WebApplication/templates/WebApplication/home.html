@@ -2,7 +2,12 @@
 
 {% block content %}
 <h1>Artist Library</h1>
-<p>Cook up something here</p>
+<p>Featured artists</p>
+<ul>
+    {% for artist in artists %}
+    <li><a href="{% url 'artist_view' artist.id %}">{{ artist.name }}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}
 
 {% block footer %}
