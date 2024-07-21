@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 
+{% block title %}
+Home
+{% endblock %}
+
 {% block content %}
 <h1>Artist Library</h1>
 <p>Featured artists</p>
 <ul>
     {% for artist in artists %}
-    <li><a href="{% url 'artist_view' artist.id %}">{{ artist.name }}</a></li>
+    <li>{{ artist.name }}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
