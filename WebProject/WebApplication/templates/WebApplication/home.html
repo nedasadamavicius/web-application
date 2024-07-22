@@ -1,17 +1,39 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Home
 {% endblock %}
 
+{% block individual_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Artist Library</h1>
-<p>Featured artists</p>
-<ul>
-    {% for artist in artists %}
-    <li>{{ artist.name }}</a></li>
-    {% endfor %}
-</ul>
+    <div class="main-header">
+        <h1>Artist Library</h1>
+        <p>Featured artists</p>
+    </div>
+    <div class="scrollable-content">
+        <ul>
+            {% for artist in artists %}
+            <a href="{% url 'artist' id=artist.id %}" class="artist-link">
+            <li class="artist-entry">
+                <div class="artist-content">
+                    {% if artist.image_data %}
+                    <img src="data:image/jpeg;base64,{{ artist.image_data }}" alt="{{ artist.name }}" class="artist-image">
+                    {% else %}
+                    <p>No image available</p>
+                    {% endif %}
+                    <div class="artist-text">
+                        <span class="artist-name">{{ artist.name }}</span>
+                        <p class="artist-bio">{{ artist.bio }}</p>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
 
 {% block footer %}

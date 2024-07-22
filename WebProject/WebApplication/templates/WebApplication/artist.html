@@ -1,10 +1,18 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Artist
 {% endblock %}
 
+{% block individual_css %}
+<link rel="stylesheet" href="{% static 'css/artist.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Artist Page</h1>
-<p>Welcome to the Artist Page!</p>
+    <h1 class="artist-name">{{ artist.name }}</h1>
+    <p class="artist-bio">{{ artist.bio }}</p>
+    <div class="spotify-player">
+    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/{{ artist.playlist_id }}?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
 {% endblock %}
