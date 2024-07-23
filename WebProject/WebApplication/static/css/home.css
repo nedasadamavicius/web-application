@@ -9,12 +9,9 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        scrollbar-color: darkred transparent;
+        scrollbar-width: thin;
     }
-
-    body .container main p {
-        display: none;
-    }
-
 
     body .container main .scrollable-content {
         overflow-y: auto;
@@ -24,11 +21,6 @@
     body .container main ul {
         list-style-type: none;
         padding: 0;
-    }
-
-    body .container main {
-        scrollbar-color: darkred transparent;
-        scrollbar-width: thin;
     }
 
     body .container main .artist-entry:hover {
@@ -59,7 +51,7 @@
 
     body .container main .artist-image {
         height: 20vh;
-        width: auto;
+        width: 20vh;
         margin-right: 20px;
     }
 

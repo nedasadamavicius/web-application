@@ -60,6 +60,9 @@ body {
         width: 250px;
         background-color: #212020;
         padding: 10px;
+        overflow-y: auto;
+        scrollbar-color: darkred transparent;
+        scrollbar-width: thin;
     }
 
     body .container nav ul {
