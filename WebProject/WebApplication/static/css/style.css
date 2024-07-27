@@ -129,7 +129,7 @@ body {
 }
 
 /* CSS for Mobile environments */
-@media (max-width: 800px) {
+/*@media (max-width: 800px) {
     html, body {
         margin: 0;
         padding: 0;
@@ -230,4 +230,4 @@ body {
         color: white;
         text-decoration: none;
     }
-}
+}*/
