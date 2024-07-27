@@ -36,6 +36,7 @@
         align-items: flex-start;
         margin-right: 20px;
         transition: background-color 0.3s;
+        border-radius: 12px;
     }
 
     body .container main a.artist-link {
@@ -53,6 +54,7 @@
         height: 20vh;
         width: 20vh;
         margin-right: 20px;
+        border-radius: 10px;
     }
 
     body .container main .artist-text {
