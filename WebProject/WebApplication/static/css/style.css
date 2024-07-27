@@ -17,7 +17,7 @@ body {
 }
 
 /* CSS for Desktop environments */
-@media (min-width: 801px) {
+/*@media (min-width: 801px) { }*/
     html, body {
         height: 100%;
         margin: 0;
@@ -126,10 +126,10 @@ body {
             padding: 10px 0;
         }
     /* -----FOOTER CONTENT----- */
-}
+
 
 /* CSS for Mobile environments */
-@media (max-width: 800px) {
+/*@media (max-width: 800px) {
     html, body {
         margin: 0;
         padding: 0;
@@ -230,4 +230,4 @@ body {
         color: white;
         text-decoration: none;
     }
-}
+}*/
