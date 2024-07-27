@@ -11,8 +11,14 @@ Artist
 
 {% block content %}
     <h1 class="artist-name">{{ artist.name }}</h1>
-    <p class="artist-bio">{{ artist.bio }}</p>
+    <p class="artist-bio">Popularity score: {{ artist.popularity }}</p>
+    <p class="artist-bio">
+        Related genres:
+        {% for genre in artist.genres %}
+            {{ genre|capfirst }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <p class="artist-bio">Followers: {{ artist.followers }}</p>
     <div class="spotify-player">
-    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/{{ artist.playlist_id }}?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
+    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/{{ artist.spotify_id }}?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
 {% endblock %}

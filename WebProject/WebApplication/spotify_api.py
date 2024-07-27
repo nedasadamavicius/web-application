@@ -57,8 +57,8 @@ def fetch_artist_ids_by_genre(access_token, genre_name):
         return []
 
 
-# Function to get Artist object from the Spotify API, then parse to Artist Model.    
-def fetch_artist_details(access_token, artist_ids):
+# Function to get Artist object from the Spotify API, then parse it and return a list of artists   
+def fetch_artist_details_home(access_token, artist_ids):
     detailed_artists = []
 
     for artist_id in artist_ids:
@@ -82,3 +82,27 @@ def fetch_artist_details(access_token, artist_ids):
             print(f"Failed to fetch details for artist ID: {artist_id}")
 
     return detailed_artists
+
+
+def fetch_individual_artist(access_token, artist_id):
+    url = f"https://api.spotify.com/v1/artists/{artist_id}"
+    
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        artist_details = response.json()
+        return {
+            'spotify_id': artist_details.get('id'),
+            'image_url': artist_details['images'][0]['url'] if artist_details.get('images') and len(artist_details['images']) > 0 else None,
+            'name': artist_details.get('name'),
+            'popularity': artist_details.get('popularity', 0),
+            'genres': artist_details.get('genres', []),
+            'followers': artist_details.get('followers', {}).get('total', 0),
+            'external_url': artist_details.get('external_urls', {}).get('spotify', '')
+        }
+    else:
+        raise Exception(f"Failed to fetch details for artist ID: {artist_id}")
