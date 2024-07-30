@@ -237,6 +237,11 @@ body {
         border-radius: 12px;
     }
 
+    main a.artist-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
     main .artist-content {
         display: flex;
         align-items: flex-start;
