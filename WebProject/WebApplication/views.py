@@ -30,3 +30,8 @@ def artist_view(request, id):
     artist = fetch_individual_artist(access_token, id)
 
     return render(request, 'WebApplication/artist.html', {'artist': artist})
+
+
+# About page
+def about_view(request):
+    return render(request, 'WebApplication/about.html')

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+About
+{% endblock %}
+
+{% block individual_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>What is this project?</h1>
+<h2>A slightly improved version of my first software project</h2>
+<p>This "Songify" project is - in a way - a remake of a project I have had to work on during my very first semester. It is my attempt to use newly gained knowledge about different design/programming concepts. </br> My version of the project is trying to achieve a straight forward way to browse musical artists of different genres of music. </br> </br> This project is re-created using high-level web framework Django, and makes heavy use of Spotify API. </br></br> The repository below holds the entire project as is. </br> <a href="https://github.com/nedasadamavicius/web-application" target="_blank">GitHub Repo</a> </p>
+{% endblock %}
