@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.cache import cache
 import requests
+import base64
 
 
 # Self-explanatory
@@ -10,7 +11,23 @@ def get_access_token():
 
     url = "https://accounts.spotify.com/api/token"
 
-    response = requests.post(url, auth=(client_id, client_secret), data={'grant_type': 'client_credentials'})
+    # Encode client credentials in Base64
+    credentials = f"{client_id}:{client_secret}"
+    encoded_credentials = base64.b64encode(credentials.encode()).decode()
+
+    headers = {
+        "Authorization": f"Basic {encoded_credentials}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    data = {"grant_type": "client_credentials"}
+
+    response = requests.post(url, headers=headers, data=data)
+
+    # Check for errors
+    if response.status_code != 200:
+        print(f"Error: {response.json()}")  # Debugging output
+        return None
 
     return response.json().get('access_token')
 
