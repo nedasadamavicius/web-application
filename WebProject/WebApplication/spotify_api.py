@@ -57,13 +57,13 @@ def fetch_artist_ids_by_genre(access_token, genre_name):
         return []
 
 
-# Function to get Artist object from the Spotify API, then parse it and return a list of artists   
+# Function to get Artist object from the Spotify API, then parse it and return a list of artists
 def fetch_artist_details_home(access_token, artist_ids):
     detailed_artists = []
 
     for artist_id in artist_ids:
         url = f"https://api.spotify.com/v1/artists/{artist_id}"
-        
+
         headers = {
             'Authorization': f'Bearer {access_token}'
         }
@@ -86,7 +86,7 @@ def fetch_artist_details_home(access_token, artist_ids):
 
 def fetch_individual_artist(access_token, artist_id):
     url = f"https://api.spotify.com/v1/artists/{artist_id}"
-    
+
     headers = {
         'Authorization': f'Bearer {access_token}'
     }
