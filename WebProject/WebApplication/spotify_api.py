@@ -34,23 +34,24 @@ def get_access_token():
 
 # Helper for caching
 def fetch_genres(access_token):
-    url = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
+    url = "https://api.spotify.com/v1/browse/categories"  # Corrected URL
 
     headers = {
-        'Authorization': f'Bearer {access_token}'
+        "Authorization": f"Bearer {access_token}"
     }
 
     response = requests.get(url, headers=headers)
 
     try:
         response_data = response.json()
+        
         if response.status_code != 200:
-            print(f"Error fetching genres: {response_data}")  # Debugging
             return []
 
-        return response_data.get('genres', [])
+        # Extract category names
+        return [category['name'] for category in response_data.get('categories', {}).get('items', [])]
+
     except requests.exceptions.JSONDecodeError:
-        print(f"Failed to parse JSON. Response text: {response.text}")  # Debugging
         return []
 
 
@@ -63,7 +64,7 @@ def fetch_and_cache_genres():
             print("Failed to retrieve access token")
         else:
             print(f"Access Token: {access_token}")
-            
+
         genres = fetch_genres(access_token)
         cache.set('spotify_genres', genres, timeout=86400)  # Cache for 24 hours
     return genres
