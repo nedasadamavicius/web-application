@@ -42,7 +42,16 @@ def fetch_genres(access_token):
 
     response = requests.get(url, headers=headers)
 
-    return response.json().get('genres', [])
+    try:
+        response_data = response.json()
+        if response.status_code != 200:
+            print(f"Error fetching genres: {response_data}")  # Debugging
+            return []
+
+        return response_data.get('genres', [])
+    except requests.exceptions.JSONDecodeError:
+        print(f"Failed to parse JSON. Response text: {response.text}")  # Debugging
+        return []
 
 
 # Self-explanatory function
@@ -50,6 +59,11 @@ def fetch_and_cache_genres():
     genres = cache.get('spotify_genres')
     if not genres:
         access_token = get_access_token()
+        if not access_token:
+            print("Failed to retrieve access token")
+        else:
+            print(f"Access Token: {access_token}")
+            
         genres = fetch_genres(access_token)
         cache.set('spotify_genres', genres, timeout=86400)  # Cache for 24 hours
     return genres
