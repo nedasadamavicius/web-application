@@ -2,6 +2,9 @@
 Remake of Project 1 - Web Application
 https://webapp.redragondigital.com
 
+### Disclaimer
+There is a chance for Spotify API to change their API setup (e.g. different endpoint name), if something does not load within the app, it is likely because of that - I would check that first.
+
 ## Running the project
 To run current (or any) version of this project, first create and activate a virtual Python environment.
 
