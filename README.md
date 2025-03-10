@@ -1,6 +1,6 @@
 # Web Application
 Remake of Project 1 - Web Application
-https://nedasadamavicius.pythonanywhere.com
+https://webapp.redragondigital.com
 
 ## Running the project
 To run current (or any) version of this project, first create and activate a virtual Python environment.
