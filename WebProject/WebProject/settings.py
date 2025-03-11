@@ -1,3 +1,4 @@
+
 """
 Django settings for WebProject project.
 
@@ -18,11 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 env = environ.Env()
-environ.Env.read_env(BASE_DIR / '.env')
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+        environ.Env.read_env(str(env_file))
 
 SPOTIFY_CLIENT_ID = env('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -33,10 +35,12 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG')
 
 ALLOWED_HOSTS = [
-    'nedasadamavicius.pythonanywhere.com',
+    env('DOMAIN'),
+    env('EC2'),
+    env('CF'),
+    env('EI'),
     'localhost'
 ]
-
 
 # Application definition
 
@@ -85,7 +89,9 @@ WSGI_APPLICATION = 'WebProject.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {}
+    'default': {
+        'ENGINE': 'django.db.backends.dummy'
+    }
 }
 
 
@@ -130,8 +136,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_ROOT = '/home/nedasadamavicius/web-application/WebProject/WebApplication/static/'
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Default primary key field type

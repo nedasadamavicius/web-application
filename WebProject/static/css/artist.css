@@ -1,0 +1,19 @@
+@media (min-width: 801px) {
+    body .container main {
+        grid-area: main;
+        padding-left: 6px;
+    }
+
+    body .container main h1.artist-name {
+        color: white;
+    }
+
+    body .container main img.artist-image {
+        height: 200px;
+        width: 200px;
+    }
+
+    body .container main p.artist-bio {
+        color: white;
+    }
+}

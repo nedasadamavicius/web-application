@@ -1,0 +1,293 @@
+@font-face {
+    font-family: 'NightcoreDemo';
+    src: url('../fonts/NightcoreDemo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BrightRomance';
+    src: url('../fonts/BrightRomance-vnvyA.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+/* CSS for Desktop environments */
+@media (min-width: 801px) {
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0px 5px;
+        overflow: auto;
+        background: linear-gradient(darkred, black);
+    }
+
+    body .container {
+        display: grid;
+        grid-template-areas:
+            'header header header'
+            'nav main main'
+            'nav main main'
+            'footer footer footer';
+        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-rows: 20vh 37.5vh 37.5vh 5vh;
+        height: 100vh;
+        width: 100%;
+    }
+
+    /* -----HEADER CONTENT----- */
+    body .container header {
+        grid-area: header;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    body .container header img {
+        position: relative;
+        object-position: top center;
+        max-height: 100%;
+        border-radius: 12px;
+    }
+    /* -----HEADER CONTENT----- */
+
+
+    /* -----NAV CONTENT----- */
+    body .container nav {
+        grid-area: nav;
+        width: 250px;
+        background-color: #212020;
+        padding: 10px;
+        overflow-y: auto;
+        scrollbar-color: darkred transparent;
+        scrollbar-width: thin;
+        border-radius: 12px;
+    }
+
+    body .container nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    body .container nav ul li {
+        margin-bottom: 10px;
+    }
+
+    body .container nav ul li a {
+        background-color: #9c3a3a;
+        border: 1px solid #D65555;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        border-radius: 12px;
+    }
+
+    body .container nav ul li a:hover {
+        background-color: #b44848;
+    }
+
+    body .container nav h2 {
+        color: white;
+        padding-bottom: 10px;
+    }
+    /* -----NAV CONTENT----- */
+
+    /* -----FOOTER CONTENT----- */
+        body .container footer a:link, a:visited, a:hover, a:active {
+            color: white;
+            text-decoration: none;
+        }
+
+        body .container footer a {
+            display: inline-block;
+            background-color: #212020;
+            padding: 0px 5px;
+            border-radius: 12px;
+        }
+
+        body .container footer {
+            grid-area: footer;
+            text-align: end;
+            margin: 0;
+            padding: 10px 0;
+        }
+    /* -----FOOTER CONTENT----- */
+}
+
+/* CSS for Mobile environments */
+@media (max-width: 800px) {
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        background: linear-gradient(darkred, black);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+    }
+
+    .container {
+        display: grid;
+        grid-template-areas:
+            'header'
+            'nav'
+            'main'
+            'footer';
+        grid-template-columns: 1fr;
+        grid-template-rows: 4vh 10vh 78vh 8vh;
+        width: 100%;
+        min-height: 100vh;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .container header img {
+        display: none;
+    }
+
+    nav {
+        grid-area: nav;
+        background-color: #333;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: auto; /* Allow horizontal scrolling */
+        white-space: nowrap; /* Prevent items from wrapping to the next line */
+    }
+    
+    nav h2 {
+        display: none;
+    }
+    
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        width: 100%;
+        justify-content: flex-start; /* Align items to the start of the container */
+        overflow-x: auto; /* Allow horizontal scrolling */
+    }
+    
+    nav ul li {
+        margin: 0 5px;
+        text-align: center;
+        flex: 0 0 auto; /* Prevent flex items from shrinking */
+    }
+    
+    nav ul li a {
+        background-color: #D65555;
+        color: white;
+        padding: 8px 16px;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-radius: 4px; /* Optional: Add some border radius for aesthetics */
+    }
+
+    main {
+        grid-area: main;
+        padding: 10px;
+        height: auto;
+        max-height: 100vh;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        scrollbar-color: darkred transparent;
+        scrollbar-width: thin;
+    }
+
+    main .scrollable-content {
+        overflow-y: auto;
+        max-height: calc(100vh - 60px);
+    }
+
+    main ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    main .artist-entry {
+        background-color: rgba(139, 0, 0, 0.7);
+        border: 2px solid darkred;
+        margin-bottom: 10px;
+        padding: 10px;
+        display: flex;
+        align-items: flex-start;
+        margin-right: 20px;
+        transition: background-color 0.3s;
+        border-radius: 12px;
+    }
+
+    main a.artist-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    main .artist-content {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    main .artist-image {
+        height: 10vh;
+        width: 10vh;
+        margin-right: 20px;
+        border-radius: 10px;
+    }
+
+    main .artist-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    main .artist-name {
+        font-size: larger;
+        margin-bottom: 5px;
+    }
+
+    main .artist-bio {
+        font-size: medium;
+        color: #FFF;
+        opacity: 0.8;
+    }
+
+    main h1 {
+        display: none;
+    }
+
+    main h2, p, li {
+        color: white;
+    }
+
+    footer {
+        grid-area: footer;
+        padding: 10px;
+        text-align: center;
+    }
+
+    footer a {
+        color: white;
+        text-decoration: none;
+    }
+}
