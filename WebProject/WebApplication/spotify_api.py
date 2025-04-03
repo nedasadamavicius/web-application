@@ -63,7 +63,8 @@ def fetch_and_cache_genres():
         if not access_token:
             print("Failed to retrieve access token")
         else:
-            print(f"Access Token: {access_token}")
+            # print(f"Access Token: {access_token}")
+            print('Access token retrieved')
 
         genres = fetch_genres(access_token)
         cache.set('spotify_genres', genres, timeout=86400)  # Cache for 24 hours
