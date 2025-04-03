@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 import environ
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +32,16 @@ SPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+
+CELERY_BEAT_SCHEDULE = {
+    'refresh-spotify-genres-daily': {
+        'task': 'WebApplication.tasks.refresh_spotify_genres',
+        'schedule': crontab(hour=0, minute=0),  # every day at midnight
+    },
+}
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
 
