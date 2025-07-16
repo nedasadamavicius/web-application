@@ -55,7 +55,6 @@ def fetch_genres(access_token):
         return []
 
 
-# Self-explanatory function
 def fetch_and_cache_genres():
     genres = cache.get('spotify_genres')
     if not genres:
@@ -70,7 +69,9 @@ def fetch_and_cache_genres():
     return genres
 
 
-# Self-explanatory function
+class NoArtistsFound(Exception):
+    pass
+
 def fetch_artist_ids_by_genre(access_token, genre_name):
     genre_query = genre_name.replace(" ", "+").lower()
 
@@ -84,9 +85,28 @@ def fetch_artist_ids_by_genre(access_token, genre_name):
 
     if response.status_code == 200:
         artists = response.json().get('artists', {}).get('items', [])
+        if not artists:
+            raise NoArtistsFound(f"No artists found for genre '{genre_name}'")
         return [{'id': artist['id']} for artist in artists]
     else:
-        return []
+        raise Exception(f"Spotify API error: {response.status_code} - {response.text}")
+
+# def fetch_artist_ids_by_genre(access_token, genre_name):
+#     genre_query = genre_name.replace(" ", "+").lower()
+
+#     url = f"https://api.spotify.com/v1/search?q=genre:%22{genre_query}%22&type=artist&limit=20"
+
+#     headers = {
+#         'Authorization': f'Bearer {access_token}'
+#     }
+
+#     response = requests.get(url, headers=headers)
+
+#     if response.status_code == 200:
+#         artists = response.json().get('artists', {}).get('items', [])
+#         return [{'id': artist['id']} for artist in artists]
+#     else:
+#         return []
 
 
 # Function to get Artist object from the Spotify API, then parse it and return a list of artists

@@ -19,9 +19,19 @@
 {% endblock %}
 
 {% block content %}
+<!-- <div class="main-header">
+    <h1>Artist library</h1>
+    <p>Artists featured in {{ genre|capfirst }}</p>
+</div> -->
 <div class="main-header">
     <h1>Artist library</h1>
     <p>Artists featured in {{ genre|capfirst }}</p>
+
+    {% if error_message %}
+    <div class="error-box">
+        {{ error_message }}
+    </div>
+    {% endif %}
 </div>
 <div class="scrollable-content">
     <ul>

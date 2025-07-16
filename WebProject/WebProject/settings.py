@@ -33,23 +33,23 @@ SPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+#CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
-CELERY_BEAT_SCHEDULE = {
-    'refresh-spotify-genres-daily': {
-        'task': 'WebApplication.tasks.refresh_spotify_genres',
-        'schedule': crontab(hour=0, minute=0),  # every day at midnight
-    },
-}
+#CELERY_BEAT_SCHEDULE = {
+#     'refresh-spotify-genres-daily': {
+#         'task': 'WebApplication.tasks.refresh_spotify_genres',
+#         'schedule': crontab(hour=0, minute=0),  # every day at midnight
+#     },
+# }
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
 
 ALLOWED_HOSTS = [
     env('DOMAIN'),
-    env('EC2'),
-    env('CF'),
-    env('EI'),
+#    env('EC2'),
+#    env('CF'),
+#    env('EI'),
     'localhost'
 ]
 
@@ -148,6 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 

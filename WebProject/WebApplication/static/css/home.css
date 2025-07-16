@@ -82,3 +82,14 @@
     }
     /* -----MAIN CONTENT----- */
 }
+
+/* -----temporary error shit----- */
+.error-box {
+    background-color: #ffdddd;
+    color: darkred;
+    padding: 10px;
+    border: 1px solid darkred;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+}
