@@ -1,8 +1,6 @@
 # Web Application - Spotify Explorer
 
----
-
-### Disclaimer
+## Disclaimer
 
 There is a chance for Spotify API to change their API setup (e.g., different endpoint name).
 If something does not load within the app, it is likely because of that — check API endpoints first.
