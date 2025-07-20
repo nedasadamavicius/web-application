@@ -1,6 +1,4 @@
-# Web Application
-
-Remake of Project 1 - Web Application
+# Web Application - Spotify Explorer
 
 ---
 
