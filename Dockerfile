@@ -22,8 +22,10 @@ COPY . .
 # Change into Django project directory
 WORKDIR /app/WebProject
 
+RUN python3 manage.py collectstatic --noinput
+
 # Expose port for Django dev server
 EXPOSE 8000
 
-# Run Django dev server with watchdog-based auto reload
+# Run Django dev server
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
