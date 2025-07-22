@@ -21,7 +21,6 @@ COPY . .
 
 # Collect static files (only matters in prod)
 WORKDIR /app/WebProject
-RUN python3 manage.py collectstatic --noinput
 
 # Expose port
 EXPOSE 8000
