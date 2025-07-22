@@ -6,10 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DJANGO_COMMAND: >
-        sh -c "rm -rf /var/www/webapp/static/* &&
-              python3 manage.py collectstatic --noinput &&
-              gunicorn WebProject.wsgi:application --bind 0.0.0.0:8000 --workers=4"
+      DJANGO_COMMAND: gunicorn WebProject.wsgi:application --bind 0.0.0.0:8000 --workers=4
     volumes:
       - /var/www/webapp/static:/var/www/webapp/static
     depends_on:
