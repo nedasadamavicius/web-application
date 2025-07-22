@@ -3,7 +3,34 @@ services:
     build: .
     container_name: django_web_prod
     restart: always
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     environment:
       DJANGO_COMMAND: gunicorn WebProject.wsgi:application --bind 0.0.0.0:8000 --workers=4
+    volumes:
+      - /var/www/webapp/static:/var/www/webapp/static
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7
+    container_name: redis_prod
+    restart: always
+
+  celery:
+    build: .
+    container_name: celery_worker_prod
+    command: celery -A WebProject worker --loglevel=info
+    depends_on:
+      - redis
+      - web
+    restart: always
+
+  celery-beat:
+    build: .
+    container_name: celery_beat_prod
+    command: celery -A WebProject beat --loglevel=info
+    depends_on:
+      - redis
+      - web
+    restart: always

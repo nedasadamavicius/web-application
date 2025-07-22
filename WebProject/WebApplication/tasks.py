@@ -1,6 +1,7 @@
 from celery import shared_task
-from .spotify_api import fetch_and_cache_genres
+from .services.spotify_service import SpotifyService
 
 @shared_task
 def refresh_spotify_genres():
-    fetch_and_cache_genres()
+    service = SpotifyService()
+    service.get_genres()  # Will refresh cache

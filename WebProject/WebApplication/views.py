@@ -1,63 +1,60 @@
 from django.shortcuts import render
 from django.core.cache import cache
-from .spotify_api import get_access_token, fetch_artist_ids_by_genre, fetch_artist_details_home, fetch_individual_artist
-from .spotify_api import NoArtistsFound
+from .services.spotify_service import SpotifyService, NoArtistsFound, SpotifyServiceError
 
-# Create your views here.
+
+spotify_service = SpotifyService()
+
 
 def home_view(request):
     genre_name = request.GET.get('genre_name', 'synthwave')
-    access_token = get_access_token()
+    artists = []
+    error_message = None
 
     try:
-        artist_ids = fetch_artist_ids_by_genre(access_token, genre_name)
-        artist_ids = [artist['id'] for artist in artist_ids]
-        artists = fetch_artist_details_home(access_token, artist_ids)
-        error_message = None
-    except NoArtistsFound as e:
-        artists = []
-        error_message = str(e)
+        # Fetch artist IDs and details
+        artist_ids = spotify_service.get_artists_by_genre(genre_name)
+        artists = spotify_service.get_artists_details_bulk(artist_ids)
+
+    except NoArtistsFound:
+        error_message = f"No artists found for the genre '{genre_name}'. Try another genre."
+    except SpotifyServiceError:
+        error_message = "Sorry! We’re having trouble fetching artists from Spotify right now."
     except Exception as e:
-        artists = []
-        error_message = f"Unexpected error: {str(e)}"
+        error_message = "An unexpected error occurred. Please try again later."
 
-    genres = cache.get('spotify_genres')
+    # Get genres (SpotifyService caches them)
+    try:
+        genres = spotify_service.get_genres()
+    except SpotifyServiceError:
+        genres = []
+        if not error_message:
+            error_message = "Could not load genres from Spotify."
 
-    return render(request, 'WebApplication/home.html', {
-        'artists': artists,
-        'genres': genres,
-        'genre': genre_name,
-        'error_message': error_message
+    return render(request, "WebApplication/home.html", {
+        "artists": artists,
+        "genres": genres,
+        "genre": genre_name,
+        "error_message": error_message
     })
 
-# # Landing page
-# def home_view(request):
-#     genre_name = request.GET.get('genre_name', 'synthwave')  # Initially default to 'synthwave'
-#     access_token = get_access_token()
 
-#     artist_ids = fetch_artist_ids_by_genre(access_token, genre_name)
-#     artist_ids = [artist['id'] for artist in artist_ids]
-
-#     artists = fetch_artist_details_home(access_token, artist_ids)
-
-#     genres = cache.get('spotify_genres')
-
-#     return render(request, 'WebApplication/home.html', {
-#         'artists': artists,
-#         'genres': genres,
-#         'genre': genre_name
-#     })
-
-
-# Individual artist page
 def artist_view(request, id):
-    access_token = get_access_token()
+    artist = None
+    error_message = None
 
-    artist = fetch_individual_artist(access_token, id)
+    try:
+        artist = spotify_service.get_artist_details(id)
+    except SpotifyServiceError as e:
+        error_message = "Sorry! We couldn’t load this artist’s details right now."
+    except Exception as e:
+        error_message = "An unexpected error occurred while loading the artist page."
 
-    return render(request, 'WebApplication/artist.html', {'artist': artist})
+    return render(request, "WebApplication/artist.html", {
+        "artist": artist,
+        "error_message": error_message
+    })
 
 
-# About page
 def about_view(request):
     return render(request, 'WebApplication/about.html')
