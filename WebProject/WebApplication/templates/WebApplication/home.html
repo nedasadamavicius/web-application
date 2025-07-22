@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block title %}
-
 {% endblock %}
 
 {% block individual_css %}
@@ -13,26 +12,27 @@
 <h2>Explore</h2>
 <ul class="button-group">
     {% for genre in genres %}
-    <li><a href="?genre_name={{ genre }}">{{ genre|capfirst }}</a></li>
+        <li><a href="?genre_name={{ genre }}">{{ genre|capfirst }}</a></li>
+    {% empty %}
+        <li><em>No genres available</em></li>
     {% endfor %}
 </ul>
 {% endblock %}
 
 {% block content %}
-<!-- <div class="main-header">
-    <h1>Artist library</h1>
-    <p>Artists featured in {{ genre|capfirst }}</p>
-</div> -->
 <div class="main-header">
-    <h1>Artist library</h1>
-    <p>Artists featured in {{ genre|capfirst }}</p>
+    <h1>Artist Library</h1>
+    <p>Artists featured in <strong>{{ genre|capfirst }}</strong></p>
 
     {% if error_message %}
     <div class="error-box">
-        {{ error_message }}
+        <p>{{ error_message }}</p>
+        <p>Try selecting a different genre or coming back later.</p>
     </div>
     {% endif %}
 </div>
+
+{% if artists %}
 <div class="scrollable-content">
     <ul>
         {% for artist in artists %}
@@ -50,8 +50,9 @@
         {% endfor %}
     </ul>
 </div>
-{% endblock %}
-
-{% block footer %}
-<a href="{% url 'about' %}">About</a>
+{% else %}
+    {% if not error_message %}
+    <p>No artists available for this genre.</p>
+    {% endif %}
+{% endif %}
 {% endblock %}
