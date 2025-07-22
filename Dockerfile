@@ -19,13 +19,12 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # Copy all project files
 COPY . .
 
-# Change into Django project directory
+# Collect static files (only matters in prod)
 WORKDIR /app/WebProject
-
 RUN python3 manage.py collectstatic --noinput
 
-# Expose port for Django dev server
+# Expose port
 EXPOSE 8000
 
-# Run Django dev server
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+# Use an environment variable for flexibility
+CMD ["sh", "-c", "${DJANGO_COMMAND}"]
