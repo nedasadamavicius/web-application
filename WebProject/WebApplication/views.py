@@ -1,18 +1,18 @@
 from django.shortcuts import render
 from django.core.cache import cache
-from .spotify_api import get_access_token, fetch_artist_ids_by_genre, fetch_artist_details_home, fetch_individual_artist
-from .spotify_api import NoArtistsFound
+from .services.spotify_service import SpotifyService, NoArtistsFound
 
-# Create your views here.
+
+spotify_service = SpotifyService()
+
 
 def home_view(request):
     genre_name = request.GET.get('genre_name', 'synthwave')
-    access_token = get_access_token()
 
     try:
-        artist_ids = fetch_artist_ids_by_genre(access_token, genre_name)
-        artist_ids = [artist['id'] for artist in artist_ids]
-        artists = fetch_artist_details_home(access_token, artist_ids)
+        # Get artist IDs and their details
+        artist_ids = spotify_service.get_artists_by_genre(genre_name)
+        artists = spotify_service.get_artists_details_bulk(artist_ids)
         error_message = None
     except NoArtistsFound as e:
         artists = []
@@ -21,7 +21,8 @@ def home_view(request):
         artists = []
         error_message = f"Unexpected error: {str(e)}"
 
-    genres = cache.get('spotify_genres')
+    # Get genres from cache (already handled in SpotifyService)
+    genres = spotify_service.get_genres()
 
     return render(request, 'WebApplication/home.html', {
         'artists': artists,
@@ -30,34 +31,21 @@ def home_view(request):
         'error_message': error_message
     })
 
-# # Landing page
-# def home_view(request):
-#     genre_name = request.GET.get('genre_name', 'synthwave')  # Initially default to 'synthwave'
-#     access_token = get_access_token()
 
-#     artist_ids = fetch_artist_ids_by_genre(access_token, genre_name)
-#     artist_ids = [artist['id'] for artist in artist_ids]
-
-#     artists = fetch_artist_details_home(access_token, artist_ids)
-
-#     genres = cache.get('spotify_genres')
-
-#     return render(request, 'WebApplication/home.html', {
-#         'artists': artists,
-#         'genres': genres,
-#         'genre': genre_name
-#     })
-
-
-# Individual artist page
 def artist_view(request, id):
-    access_token = get_access_token()
-
-    artist = fetch_individual_artist(access_token, id)
+    try:
+        artist = spotify_service.get_artist_details(id)
+    except Exception as e:
+        # Optionally, handle artist fetch errors gracefully
+        artist = None
+        error_message = f"Error fetching artist: {str(e)}"
+        return render(request, 'WebApplication/artist.html', {
+            'artist': artist,
+            'error_message': error_message
+        })
 
     return render(request, 'WebApplication/artist.html', {'artist': artist})
 
 
-# About page
 def about_view(request):
     return render(request, 'WebApplication/about.html')
