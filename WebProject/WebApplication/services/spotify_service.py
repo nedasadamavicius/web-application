@@ -24,19 +24,25 @@ class SpotifyService:
         """
         logger.info("SpotifyService.get_genres() called")
         try:
-            genres = cache.get("spotify_genres")
-            if genres is not None:
-                logger.debug("Cache hit for spotify_genres")
+            def fetch_and_format_genres():
+                logger.debug("Cache miss for spotify_genres, fetching from Spotify API")
+                categories_data = self.client.fetch_categories()
+                genres = [
+                    category['name']
+                    for category in categories_data.get("categories", {}).get("items", [])
+                ]
+                logger.info("Genres fetched and will be cached")
                 return genres
 
-            logger.debug("Cache miss for spotify_genres, fetching from Spotify API")
-            categories_data = self.client.fetch_categories()
-            genres = [
-                category['name']
-                for category in categories_data.get("categories", {}).get("items", [])
-            ]
-            cache.set("spotify_genres", genres, timeout=60 * 60 * 24)  # 24 hours
-            logger.info("Genres cached successfully")
+            # Use get_or_set to ensure only one fetch even if multiple processes call this
+            genres = cache.get_or_set(
+                "spotify_genres",
+                fetch_and_format_genres,
+                timeout=60 * 60 * 24  # 24 hours
+            )
+
+            if genres:
+                logger.debug("Cache hit for spotify_genres")
             return genres
 
         except SpotifyAPIError as e:

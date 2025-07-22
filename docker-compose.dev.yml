@@ -8,3 +8,32 @@ services:
       DJANGO_COMMAND: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7
+    container_name: redis_dev
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  celery:
+    build: .
+    container_name: celery_worker_dev
+    command: celery -A WebProject worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - web
+
+  celery-beat:
+    build: .
+    container_name: celery_beat_dev
+    command: celery -A WebProject beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - web
