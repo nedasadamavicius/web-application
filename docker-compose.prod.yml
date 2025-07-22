@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    container_name: django_web_prod
+    restart: always
+    expose:
+      - "8000"
+    environment:
+      DJANGO_COMMAND: gunicorn WebProject.wsgi:application --bind 0.0.0.0:8000 --workers=4
