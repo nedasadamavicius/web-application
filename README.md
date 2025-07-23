@@ -5,30 +5,30 @@
 There is a chance for Spotify API to change their API setup (e.g., different endpoint name).
 If something does not load within the app, it is likely because of that — check API endpoints first.
 
----
+
 
 ## 🚀 Running the Project
 
 You can run the project using **Docker Compose** (recommended) or set it up manually using **Python virtual environments**. Both sections can be read standalone, so you don't need to jump back and forth.
 
----
 
-### 🐳 Docker Compose (recommended)
+
+## 🐳 Docker Compose (recommended)
 
 This is the easiest way to run the app for **both development** and **production**.
 
----
 
-#### 📦 1. Clone the repository
+
+### 📦 1. Clone the repository
 
 ```bash
 git clone https://github.com/nedasadamavicius/spotify-explorer.git
 cd spotify-explorer
 ```
 
----
 
-#### 🔑 2. Define environment variables
+
+### 🔑 2. Define environment variables
 
 From the same **repository root** directory:
 
@@ -49,7 +49,7 @@ STATIC_ROOT=/static
 
 For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_ROOT=/var/www/webapp/static/` - or anywhere you want Django to collect static files to, just make sure you can serve those static files.
 
----
+
 
 #### ℹ️ About environment variables
 
@@ -67,9 +67,9 @@ For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_
 
   ⚠️ **Keep this key safe and never commit it to version control.**
 
----
 
-#### 🏃 3. Start the app
+
+### 🏃 3. Start the app
 
 From the **repository root**, for development run:
 
@@ -87,7 +87,7 @@ docker compose -f docker-compose.prod.yml up --build -d
 
 * Then visit the domain you've defined in the `.env` file
 
----
+
 
 #### 🔄 Common Docker commands
 
@@ -98,23 +98,23 @@ docker compose exec web python manage.py collectstatic --noinput
 docker compose exec web python manage.py migrate --noinput
 ```
 
----
 
-### 🐍 Python Virtual Environment (manual setup)
+
+## 🐍 Python Virtual Environment (manual setup)
 
 This is the **legacy setup** for running the app without Docker. Works for **both development** and **production**.
 
----
 
-#### 📦 1. Create a virtual environment
+
+### 📦 1. Create a virtual environment
 
 ```bash
 python -m venv .venv
 ```
 
----
 
-#### 🔑 2. Activate the virtual environment
+
+### 🔑 2. Activate the virtual environment
 
 * On **Windows**:
 
@@ -128,17 +128,17 @@ python -m venv .venv
   source .venv/bin/activate
   ```
 
----
 
-#### 📥 3. Install dependencies
+
+### 📥 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
 
-#### 🔑 4. Define environment variables
+
+### 🔑 4. Define environment variables
 
 From the same **repository root** directory:
 
@@ -159,7 +159,7 @@ STATIC_ROOT=/static
 
 For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_ROOT=/var/www/webapp/static/` - or anywhere you want Django to collect static files to, just make sure you can serve those static files.
 
----
+
 
 #### ℹ️ About environment variables
 
@@ -177,9 +177,9 @@ For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_
 
   ⚠️ **Keep this key safe and never commit it to version control.**
 
----
 
-#### 🏃 5. Start the app
+
+### 🏃 5. Start the app
 
 Navigate to the Django project root:
 
@@ -203,7 +203,7 @@ gunicorn WebProject.wsgi:application --bind 0.0.0.0:8000 --workers 3
 
 * Then visit the domain you’ve defined in the `.env` file.
 
----
+
 
 #### 🔄 Common management commands
 
@@ -252,7 +252,7 @@ If you are not using Docker, you need to set them up manually.
 
 ⚠️ To avoid restarting these processes manually on every reboot, configure them with **systemd** or **supervisord**.
 
----
+
 
 ## 📝 Notes
 
