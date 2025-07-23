@@ -1,4 +1,10 @@
 @media (min-width: 801px) {
+    header {
+        display: flex;
+        justify-content: space-between;
+        grid-area: header;
+    }
+
     body .container main {
         grid-area: main;
         padding-left: 6px;

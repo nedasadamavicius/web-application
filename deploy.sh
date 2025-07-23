@@ -13,6 +13,10 @@ echo "🎨 Running collectstatic in the container..."
 docker exec django_web_prod python3 manage.py collectstatic --noinput
 echo "✅ Static files populated and container running."
 
+echo "🔄 Applying database migrations..."
+docker exec django_web_prod python3 manage.py migrate --noinput
+echo "🔄 Database migrations applied."
+
 echo "🔄 Restarting Nginx..."
 systemctl restart nginx
 

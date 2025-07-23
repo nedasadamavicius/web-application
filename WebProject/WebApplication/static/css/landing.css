@@ -2,64 +2,31 @@
     header {
         display: flex;
         justify-content: space-between;
-        grid-area: header;
     }
 
-    body .container header .header-left {
-        flex: 0 0 20%; /* 20% width */
-        display: flex;
+    .spotify-login-button {
+        display: inline-flex;
         align-items: center;
-    }
-
-    body .container header .header-left img {
-        max-height: 100%;
-        width: auto;
-        border-radius: 12px;
-        object-fit: contain;
-    }
-
-    body .container header .header-right {
-        position: relative;
-        flex: 0 0 80%; /* 80% width */
-        display: flex;
-        justify-content: flex-start; /* Align items to the left - otherwise right (-end) or center (literally center) */
-        align-items: center;
-        gap: 10px; /* Space between profile pic, name, and logout */
-    }
-
-    /* Profile picture */
-    .header-right img.profile-pic {
-        height: 50px;
-        width: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    /* Username and profile link */
-    .header-right .profile-name {
-        color: white;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    /* Logout button */
-    .header-right .logout-button {
-        position: absolute;
-        right: 0px;
-        top: 0px;
         background-color: #D65555;
         color: #fff;
         text-decoration: none;
-        padding: 5px 10px;
-        border-radius: 8px;
+        font-weight: 500;
         font-size: 13px;
-        transition: background-color 0.3s ease;
+        padding: 4px 10px; /* 🔥 Reduce padding for slimmer button */
+        border-radius: 20px; /* Rounder edges */
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
-    .header-right .logout-button:hover {
+    .spotify-login-button:hover {
         background-color: #b44848;
+        transform: translateY(-1px); /* subtle hover pop */
     }
 
+    .spotify-icon {
+        height: 25px; /* Small icon */
+        margin-right: 6px;
+    }
     /* -----MAIN CONTENT----- */
     body .container main {
         grid-area: main;

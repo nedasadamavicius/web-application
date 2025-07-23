@@ -2,6 +2,7 @@ from django.conf import settings
 import requests
 import base64
 import logging
+import urllib.parse
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,8 @@ class SpotifyRequestError(SpotifyAPIError):
 class SpotifyAPIClient:
     TOKEN_URL = "https://accounts.spotify.com/api/token"
     BASE_URL = "https://api.spotify.com/v1"
+    AUTH_URL = "https://accounts.spotify.com/authorize"
+
 
     def __init__(self):
         self.client_id = settings.SPOTIFY_CLIENT_ID
@@ -117,3 +120,101 @@ class SpotifyAPIClient:
         except requests.RequestException as e:
             logger.exception("Network error during fetch_artist_details")
             raise SpotifyRequestError("Network error during fetch_artist_details") from e
+
+
+    def get_auth_url(self, redirect_uri, scope=None, state=None):
+        """
+        Generate Spotify OAuth2 authorization URL.
+        """
+        logger.info("SpotifyAPIClient.get_auth_url() called")
+        params = {
+            "client_id": self.client_id,
+            "response_type": "code",
+            "redirect_uri": redirect_uri,
+        }
+        if scope:
+            params["scope"] = scope
+        if state:
+            params["state"] = state
+
+        url = f"{self.AUTH_URL}?{urllib.parse.urlencode(params)}"
+        logger.debug(f"Generated Spotify auth URL: {url}")
+        return url
+    
+
+    def exchange_code_for_token(self, code, redirect_uri):
+        """
+        Exchange authorization code for access and refresh tokens.
+        """
+        logger.info("SpotifyAPIClient.exchange_code_for_token() called")
+        try:
+            data = {
+                "grant_type": "authorization_code",
+                "code": code,
+                "redirect_uri": redirect_uri,
+                "client_id": self.client_id,
+                "client_secret": self.client_secret,
+            }
+            headers = {"Content-Type": "application/x-www-form-urlencoded"}
+
+            response = requests.post(self.TOKEN_URL, data=data, headers=headers)
+            response.raise_for_status()
+            token_data = response.json()
+
+            logger.debug(f"Received token data: {token_data}")
+            return {
+                "access_token": token_data.get("access_token"),
+                "refresh_token": token_data.get("refresh_token"),
+                "expires_in": token_data.get("expires_in"),
+                "scope": token_data.get("scope"),
+                "token_type": token_data.get("token_type"),
+            }
+
+        except requests.HTTPError as e:
+            logger.error(f"HTTP error exchanging code for token: {e.response.status_code} {e.response.text}")
+            raise SpotifyAuthError(f"Failed to exchange code for token: {e.response.status_code}") from e
+
+        except requests.RequestException as e:
+            logger.exception("Network error during token exchange")
+            raise SpotifyAuthError("Network error during token exchange") from e
+
+
+    def get_user_profile(self, access_token):
+        """
+        Fetch the current Spotify user's profile using their access token.
+        """
+        logger.info("SpotifyAPIClient.get_user_profile() called")
+        headers = {"Authorization": f"Bearer {access_token}"}
+        url = f"{self.BASE_URL}/me"
+
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            user_data = response.json()
+            logger.debug(f"Fetched user profile: {user_data}")
+            return user_data
+
+        except requests.HTTPError as e:
+            logger.error(f"HTTP error fetching user profile: {e.response.status_code} {e.response.text}")
+            raise SpotifyRequestError(f"Failed to fetch user profile: {e.response.status_code}") from e
+
+        except requests.RequestException as e:
+            logger.exception("Network error during get_user_profile")
+            raise SpotifyRequestError("Network error during get_user_profile") from e
+
+
+    def get_user_top_artists(self, access_token, limit=20, time_range="medium_term"):
+        """
+        Fetch user's top artists from Spotify API.
+        """
+        logger.info("SpotifyAPIClient.get_user_top_artists() called")
+        url = f"{self.BASE_URL}/me/top/artists?limit={limit}&time_range={time_range}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            return response.json()
+        except requests.HTTPError as e:
+            logger.error(f"HTTP error in get_user_top_artists: {e.response.status_code} {e.response.text}")
+            raise SpotifyRequestError("Failed to fetch user’s top artists")
+    

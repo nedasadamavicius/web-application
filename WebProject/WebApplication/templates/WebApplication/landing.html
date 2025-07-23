@@ -1,31 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} - Home{% endblock %}
+{% block title %}
+- Landing Page
+{% endblock %}
 
 {% block header %}
-  <div class="profile-info">
-    {% if user_profile.image_url %}
-      <a href="{{ user_profile.profile_url }}" target="_blank">
-        <img src="{{ user_profile.image_url }}" alt="Profile Picture" class="profile-pic">
-      </a>
-    {% endif %}
-    <div class="profile-details">
-      <a href="{{ user_profile.profile_url }}" target="_blank" class="profile-name">
-        {{ user_profile.display_name }}
-      </a>
-      <div class="profile-meta">
-        <span class="followers">{{ user_profile.followers }} followers</span>
-        •
-        <span class="country">{{ user_profile.country }}</span>
-      </div>
-    </div>
-    <a href="{% url 'spotify_logout' %}" class="logout-button">Log out</a>
-  </div>
+    <a href="{% url 'spotify_login' %}" class="spotify-login-button">
+        <img src="{% static 'images/spotify-green.png' %}" alt="Spotify" class="spotify-icon">
+        Login with Spotify
+    </a>
 {% endblock %}
 
 {% block individual_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
 {% endblock %}
 
 {% block nav %}
@@ -42,12 +30,7 @@
 {% block content %}
 <div class="main-header">
     <h1>Artist Library</h1>
-
-    {% if not request.GET.genre_name %}
-        <p>Based on your most played genre <strong>{{ top_genre|capfirst }}</strong></p>
-    {% else %}
-        <p>Artists featured in <strong>{{ top_genre|capfirst }}</strong></p>
-    {% endif %}
+    <p>Artists featured in <strong>{{ genre|capfirst }}</strong></p>
 
     {% if error_message %}
     <div class="error-box">
