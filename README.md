@@ -9,7 +9,7 @@ If something does not load within the app, it is likely because of that — chec
 
 ## 🚀 Running the Project
 
-You can run the project using **Docker Compose** (recommended) or set it up manually using **Python virtual environments**. Both sections can be read standalone, so you don't need to jump back and forth.
+You can run the project using [Docker Compose (recommended)](#-docker-compose-recommended) or set it up manually using [Python virtual environments](#-python-virtual-environment-manual-setup). Both sections can be read standalone, so you don't need to jump back and forth.
 
 
 
