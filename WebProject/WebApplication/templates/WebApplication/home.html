@@ -4,7 +4,7 @@
 {% block title %} - Home{% endblock %}
 
 {% block header %}
-  <div class="profile-info">
+  <div class="profile-card">
     {% if user_profile.image_url %}
       <a href="{{ user_profile.profile_url }}" target="_blank">
         <img src="{{ user_profile.image_url }}" alt="Profile Picture" class="profile-pic">

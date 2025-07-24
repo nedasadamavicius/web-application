@@ -10,7 +10,7 @@ spotify_service = SpotifyService()
 
 # for non-authenticated users
 def landing_view(request):
-    genre_name = request.GET.get('genre_name', 'synthwave')
+    genre_name = request.GET.get('genre_name', 'metal')
     artists = []
     error_message = None
 
@@ -69,6 +69,8 @@ def spotify_callback(request):
     request.session['spotify_access_token'] = token_data['access_token']
     request.session['spotify_refresh_token'] = token_data['refresh_token']
     request.session['spotify_token_expires'] = token_data['expires_in']
+
+    request.session['is_spotify_authenticated'] = True
 
     return redirect('home')
 

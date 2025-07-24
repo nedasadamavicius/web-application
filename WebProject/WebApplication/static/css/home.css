@@ -27,38 +27,58 @@
         gap: 10px; /* Space between profile pic, name, and logout */
     }
 
+    .header-right .profile-card {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px; /* slightly larger gap */
+        padding: 8px 14px; /* increased padding */
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        font-size: 15px; /* base font size up */
+    }
+
     /* Profile picture */
-    .header-right img.profile-pic {
-        height: 50px;
-        width: 50px;
+    .profile-card .profile-pic {
+        height: 38px;
+        width: 38px;
         border-radius: 50%;
         object-fit: cover;
     }
 
-    /* Username and profile link */
-    .header-right .profile-name {
+    /* Profile name */
+    .profile-card .profile-name {
         color: white;
         font-weight: bold;
         text-decoration: none;
+        font-size: 15px;
+    }
+
+    /* Meta */
+    .profile-card .profile-meta {
+        color: #ccc;
+        font-size: 13px;
     }
 
     /* Logout button */
-    .header-right .logout-button {
-        position: absolute;
-        right: 0px;
-        top: 0px;
+    .profile-card .logout-button {
         background-color: #D65555;
         color: #fff;
         text-decoration: none;
         padding: 5px 10px;
-        border-radius: 8px;
+        border-radius: 6px;
         font-size: 13px;
         transition: background-color 0.3s ease;
+        margin-left: auto;
     }
 
-    .header-right .logout-button:hover {
+    .profile-card .logout-button:hover {
         background-color: #b44848;
     }
+
 
     /* -----MAIN CONTENT----- */
     body .container main {
