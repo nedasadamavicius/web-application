@@ -9,41 +9,8 @@ logger = logging.getLogger(__name__)
 
 spotify_service = SpotifyService()
 
-# for non-authenticated users
-def landing_view(request):
-    genre_name = request.GET.get('genre_name', 'metal')
-    artists = []
-    error_message = None
 
-    try:
-        # Fetch artist IDs and details
-        artist_ids = spotify_service.get_artists_by_genre(genre_name)
-        artists = spotify_service.get_artists_details_bulk(artist_ids)
-
-    except NoArtistsFound:
-        error_message = f"No artists found for the genre '{genre_name}'. Try another genre."
-    except SpotifyServiceError:
-        error_message = "Sorry! We’re having trouble fetching artists from Spotify right now."
-    except Exception as e:
-        error_message = "An unexpected error occurred. Please try again later."
-
-    # Get genres (SpotifyService caches them)
-    try:
-        genres = spotify_service.get_genres()
-    except SpotifyServiceError:
-        genres = []
-        if not error_message:
-            error_message = "Could not load genres from Spotify."
-
-    return render(request, "WebApplication/landing.html", {
-        "artists": artists,
-        "genres": genres,
-        "genre": genre_name,
-        "error_message": error_message
-    })
-
-
-def spotify_login(request):
+def spotify_login():
     redirect_uri = settings.SPOTIFY_REDIRECT_URI
     scope = "user-read-email user-read-private user-top-read"
     auth_url = spotify_service.get_auth_url(redirect_uri, scope)
@@ -74,6 +41,36 @@ def spotify_callback(request):
     request.session['is_spotify_authenticated'] = True
 
     return redirect('home')
+
+
+# for non-authenticated users
+def landing_view(request):
+    genre_name = request.GET.get('genre_name', 'metal') # Default genre
+    artists = []
+    error_message = None
+
+    try:
+        # Fetch artist IDs
+        artist_ids = spotify_service.get_artists_by_genre(genre_name) # this needs to be refactored to distinguish between auth and non-auth users
+        # Fetch artist details in bulk
+        artists = spotify_service.get_artists_details_bulk(artist_ids)
+
+    except NoArtistsFound:
+        error_message = f"No artists found for the genre '{genre_name}'. Try another genre."
+    except SpotifyServiceError:
+        error_message = "Sorry! We’re having trouble fetching artists from Spotify right now."
+    except Exception as e:
+        error_message = "An unexpected error occurred. Please try again later."
+
+    # Get genres (these are baked in, not fetched from Spotify)
+    genres = spotify_service.get_genres()
+
+    return render(request, "WebApplication/landing.html", {
+        "artists": artists,
+        "genres": genres,
+        "genre": genre_name,
+        "error_message": error_message
+    })
 
 
 # for authenticated users
@@ -111,7 +108,7 @@ def home_view(request):
     # --- Fetch artists for selected genre ---
     if selected_genre:
         try:
-            artist_ids = spotify_service.get_artists_by_genre(selected_genre)
+            artist_ids = spotify_service.get_artists_by_genre(selected_genre) # this needs to be refactored to distinguish between auth and non-auth users
             artists = spotify_service.get_artists_details_bulk(artist_ids)
         except NoArtistsFound:
             error_message = f"No artists found for: {selected_genre}"
@@ -126,11 +123,13 @@ def home_view(request):
         "error_message": error_message,
     })
 
-
+# NOTE: After fixing token issue, check this - could be useful. Might be a missed detail on my part.
 def artist_view(request, id):
     artist = None
     error_message = None
 
+    # NOTE: we have a bulk list of artists details within both landing and home views
+    # so we can use that to get the artist details, instead of calling service again.
     try:
         artist = spotify_service.get_artist_details(id)
     except SpotifyServiceError as e:
