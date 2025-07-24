@@ -17,6 +17,12 @@ class SpotifyRequestError(SpotifyServiceError):
 
 
 class SpotifyService:
+    GENRE_SEEDS = [
+        "hiphop","r&b","rock","pop","latin","country",
+        "soul","electronic","jazz","metal","indie",
+        "blues"
+    ]
+
     def __init__(self):
         logger.info("SpotifyService initialized")
         self.client = SpotifyAPIClient()
@@ -38,55 +44,30 @@ class SpotifyService:
 
 
     def get_genres(self):
-        """
-        Fetch and cache genres.
-        """
-        logger.info("SpotifyService.get_genres() called")
-        try:
-            def fetch_and_format_genres():
-                logger.debug("Cache miss for spotify_genres, fetching from Spotify API")
-                categories_data = self.client.fetch_categories()
-                genres = [
-                    category['name']
-                    for category in categories_data.get("categories", {}).get("items", [])
-                ]
-                logger.info("Genres fetched and will be cached")
-                return genres
-
-            # Use get_or_set to ensure only one fetch even if multiple processes call this
-            genres = cache.get_or_set(
-                "spotify_genres",
-                fetch_and_format_genres,
-                timeout=60 * 60 * 24  # 24 hours
-            )
-
-            if genres:
-                logger.debug("Cache hit for spotify_genres")
-            return genres
-
-        except SpotifyAPIError as e:
-            logger.error(f"Error fetching genres from Spotify API: {str(e)}")
-            raise SpotifyServiceError("Failed to fetch genres") from e
-
-        except Exception as e:
-            logger.exception("Unexpected error in get_genres()")
-            raise SpotifyServiceError("Unexpected error in get_genres()") from e
+        return self.GENRE_SEEDS
 
 
     def get_artists_by_genre(self, genre_name):
         """
-        Get artist IDs for a given genre.
+        Get artist IDs for a given genre, with Redis caching.
         """
         logger.info(f"SpotifyService.get_artists_by_genre('{genre_name}') called")
+
+        cache_key = f"artists_for_genre:{genre_name.lower()}"
+        cached = cache.get(cache_key)
+        if cached:
+            logger.debug(f"Cache hit for {cache_key}")
+            return cached
+
         try:
-            data = self.client.search_artists_by_genre(genre_name)
-            artists = data.get("artists", {}).get("items", [])
+            artists = self.client.search_artists_by_genre(genre_name)
             if not artists:
                 logger.warning(f"No artists found for genre '{genre_name}'")
                 raise NoArtistsFound(f"No artists found for genre '{genre_name}'")
 
             artist_ids = [artist['id'] for artist in artists]
-            logger.debug(f"Found {len(artist_ids)} artists for genre '{genre_name}'")
+            cache.set(cache_key, artist_ids, timeout=60 * 60)  # 1 hour cache
+            logger.debug(f"Cached artist IDs for genre '{genre_name}'")
             return artist_ids
 
         except SpotifyAPIError as e:
@@ -100,9 +81,16 @@ class SpotifyService:
 
     def get_artist_details(self, artist_id):
         """
-        Fetch details for a single artist.
+        Fetch details for a single artist, with Redis caching.
         """
         logger.info(f"SpotifyService.get_artist_details('{artist_id}') called")
+
+        cache_key = f"artist_details:{artist_id}"
+        cached = cache.get(cache_key)
+        if cached:
+            logger.debug(f"Cache hit for {cache_key}")
+            return cached
+
         try:
             artist_data = self.client.fetch_artist_details(artist_id)
             artist_info = {
@@ -114,7 +102,9 @@ class SpotifyService:
                 "image_url": artist_data['images'][0]['url'] if artist_data.get('images') else None,
                 "external_url": artist_data.get("external_urls", {}).get("spotify", "")
             }
-            logger.debug(f"Fetched details for artist {artist_info['name']} ({artist_id})")
+
+            cache.set(cache_key, artist_info, timeout=60 * 60)  # Cache for 1 hour
+            logger.debug(f"Cached artist details for {artist_id}")
             return artist_info
 
         except SpotifyAPIError as e:
@@ -176,19 +166,30 @@ class SpotifyService:
 
     def get_user_top_genres(self, access_token, limit=20):
         """
-        Fetch user's top artists and derive genres from them.
+        Fetch user's top artists and derive most frequent genres from them.
+        This reflects what genres the user listens to most based on artist metadata.
         """
         logger.info("SpotifyService.get_user_top_genres() called")
+        
         try:
+            # 1. Fetch user's top 50 artists from Spotify (based on listening history)
             top_artists_data = self.client.get_user_top_artists(access_token, limit=50)
+
             genres = []
+
+            # 2. Collect all genre tags from those top artists
             for artist in top_artists_data.get("items", []):
-                genres.extend(artist.get("genres", []))
-            # Sort genres by frequency
+                genres.extend(artist.get("genres", []))  # One artist can have multiple genre labels
+
+            # 3. Count how often each genre appears across the user's top artists
             genre_freq = {}
             for genre in genres:
-                genre_freq[genre] = genre_freq.get(genre, 0) + 1
+                genre_freq[genre] = genre_freq.get(genre, 0) + 1  # Increment frequency count
+
+            # 4. Sort genres by frequency, from most common to least
             sorted_genres = sorted(genre_freq, key=genre_freq.get, reverse=True)
+
+            # 5. Return the top N genres, based on the provided limit
             logger.debug(f"User top genres: {sorted_genres[:limit]}")
             return sorted_genres[:limit]
 
