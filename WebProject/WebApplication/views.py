@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from .services.spotify_service import SpotifyService, NoArtistsFound, SpotifyServiceError
 import logging
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ def landing_view(request):
 
 
 def spotify_login(request):
-    redirect_uri = request.build_absolute_uri(reverse("spotify_callback"))
+    redirect_uri = settings.SPOTIFY_REDIRECT_URI
     scope = "user-read-email user-read-private user-top-read"
     auth_url = spotify_service.get_auth_url(redirect_uri, scope)
     return redirect(auth_url)
@@ -62,7 +63,7 @@ def spotify_callback(request):
     if not code:
         return redirect('landing')  # Error or denied access
 
-    redirect_uri = request.build_absolute_uri(reverse("spotify_callback"))
+    redirect_uri = redirect_uri = settings.SPOTIFY_REDIRECT_URI
     token_data = spotify_service.exchange_code_for_token(code, redirect_uri)
 
     # Store tokens in session
