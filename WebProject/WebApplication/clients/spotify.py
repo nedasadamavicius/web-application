@@ -3,6 +3,7 @@ import requests
 import base64
 import logging
 import urllib.parse
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,8 @@ class SpotifyAPIClient:
     def __init__(self):
         self.client_id = settings.SPOTIFY_CLIENT_ID
         self.client_secret = settings.SPOTIFY_CLIENT_SECRET
-        self.access_token = None
+        self.access_token = None # access token for API requests for non-auth users
+        self.token_expires_at = 0 # timestamp when the access token expires
 
 
     def authenticate(self):
@@ -36,6 +38,7 @@ class SpotifyAPIClient:
         Get an OAuth access token using client credentials.
         """
         logger.info("SpotifyAPIClient.authenticate() called")
+
         try:
             credentials = f"{self.client_id}:{self.client_secret}"
             encoded_credentials = base64.b64encode(credentials.encode()).decode()
@@ -52,7 +55,11 @@ class SpotifyAPIClient:
                 logger.error(f"Authentication failed: {response.status_code} {response.text}")
                 raise SpotifyAuthError("Failed to authenticate with Spotify API")
 
-            self.access_token = response.json().get("access_token")
+            response_data = response.json()
+            self.access_token = response_data.get("access_token")
+            expires_in = response_data.get("expires_in", 3600)  # default fallback
+            self.token_expires_at = time.time() + expires_in
+
             logger.info("Spotify authentication succeeded")
             return self.access_token
 
@@ -63,9 +70,11 @@ class SpotifyAPIClient:
 
     def _get_headers(self):
         logger.debug("SpotifyAPIClient._get_headers() called")
-        if not self.access_token:
-            logger.warning("Access token missing; calling authenticate()")
+
+        if not self.access_token or time.time() >= self.token_expires_at:
+            logger.warning("Access token missing or expired; calling authenticate()")
             self.authenticate()
+        
         return {"Authorization": f"Bearer {self.access_token}"}
 
 

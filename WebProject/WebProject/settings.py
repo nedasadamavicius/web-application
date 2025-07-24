@@ -25,6 +25,7 @@ if env_file.exists():
 
 SPOTIFY_CLIENT_ID = env('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_REDIRECT_URI = env('SPOTIFY_REDIRECT_URI')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
