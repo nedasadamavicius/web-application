@@ -45,9 +45,10 @@ SECRET_KEY=your-secret
 DEBUG=True
 ALLOWED_HOSTS=localhost
 STATIC_ROOT=/static
+SPOTIFY_REDIRECT_URI=http://localhost:8000/callback/
 ```
 
-For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_ROOT=/var/www/webapp/static/` - or anywhere you want Django to collect static files to, just make sure you can serve those static files.
+For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_ROOT=/var/www/webapp/static/` - or anywhere you want Django to collect static files to, just make sure you can serve those static files. The `SPOTIFY_REDIRECT_URI=https://your-domain.com/callback/` will be what you've defined in your Spotify apps redirect URIs (`http` and `https` difference matters a lot - make or break the app).
 
 
 
@@ -155,9 +156,10 @@ SECRET_KEY=your-secret
 DEBUG=True
 ALLOWED_HOSTS=localhost
 STATIC_ROOT=/static
+SPOTIFY_REDIRECT_URI=http://localhost:8000/callback/
 ```
 
-For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_ROOT=/var/www/webapp/static/` - or anywhere you want Django to collect static files to, just make sure you can serve those static files.
+For production, set `DEBUG=False`, `ALLOWED_HOSTS=your-domain.com`, and `STATIC_ROOT=/var/www/webapp/static/` - or anywhere you want Django to collect static files to, just make sure you can serve those static files. The `SPOTIFY_REDIRECT_URI=https://your-domain.com/callback/` will be what you've defined in your Spotify apps redirect URIs (`http` and `https` difference matters a lot - make or break the app).
 
 
 
