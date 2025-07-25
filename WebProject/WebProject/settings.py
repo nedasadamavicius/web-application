@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 env = environ.Env()
-env_file = BASE_DIR / "../.env"
+env_file = BASE_DIR / "../../.secrets/.env-spotify"
 if env_file.exists():
         environ.Env.read_env(str(env_file))
 
