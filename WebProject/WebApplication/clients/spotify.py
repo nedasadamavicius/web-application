@@ -4,6 +4,7 @@ import base64
 import logging
 import urllib.parse
 import time
+from django.core.cache import cache
 
 logger = logging.getLogger(__name__)
 
@@ -27,19 +28,16 @@ class SpotifyAPIClient:
     BASE_URL = "https://api.spotify.com/v1"
     AUTH_URL = "https://accounts.spotify.com/authorize"
 
+    CLIENT_TOKEN_KEY = "spotify_client_access_token"
+    CLIENT_TOKEN_EXPIRY_KEY = "spotify_client_token_expires_at"
 
     def __init__(self):
         self.client_id = settings.SPOTIFY_CLIENT_ID
         self.client_secret = settings.SPOTIFY_CLIENT_SECRET
-        self.access_token = None # access token for API requests for non-auth users
-        self.token_expires_at = 0 # timestamp when the access token expires
 
 # Get an OAuth access token using client credentials.
     # This method is used to authenticate the client and obtain an access token.
     def authenticate_client(self):
-        """
-        Get an OAuth access token using client credentials.
-        """
         logger.info("SpotifyAPIClient.authenticate_client() called")
 
         try:
@@ -53,29 +51,35 @@ class SpotifyAPIClient:
             data = {"grant_type": "client_credentials"}
 
             response = requests.post(self.TOKEN_URL, headers=headers, data=data)
-
-            if response.status_code != 200:
-                logger.error(f"Authentication failed: {response.status_code} {response.text}")
-                raise SpotifyAuthError("Failed to authenticate client with Spotify API")
+            response.raise_for_status()
 
             response_data = response.json()
-            self.access_token = response_data.get("access_token")
-            expires_in = response_data.get("expires_in", 3600)  # default fallback
-            self.token_expires_at = time.time() + expires_in
+            access_token = response_data.get("access_token")
+            expires_in = response_data.get("expires_in", 3600)
 
-            logger.info("Spotify authentication succeeded")
-            return self.access_token
+            expires_at = time.time() + expires_in
+
+            # Cache token and expiry
+            cache.set(self.CLIENT_TOKEN_KEY, access_token, timeout=expires_in)
+            cache.set(self.CLIENT_TOKEN_EXPIRY_KEY, expires_at, timeout=expires_in)
+
+            logger.info("Spotify client access token refreshed and cached")
+            return access_token
 
         except requests.RequestException as e:
-            logger.exception("Network error during Spotify authentication")
-            raise SpotifyAuthError("Network error during Spotify authentication") from e
+            logger.exception("Failed to authenticate with Spotify")
+            raise SpotifyAuthError("Failed to authenticate with Spotify") from e
 
 # Helper function to get clients access token, and if need be, refresh it.
     def get_client_access_token(self):
-        if not self.access_token or time.time() >= self.token_expires_at:
-            logger.info("Access token is missing or expired, authenticating client")
-            self.authenticate_client()
-        return self.access_token
+        access_token = cache.get(self.CLIENT_TOKEN_KEY)
+        expires_at = cache.get(self.CLIENT_TOKEN_EXPIRY_KEY)
+
+        if not access_token or not expires_at or time.time() >= expires_at:
+            logger.info("Cached token missing or expired — refreshing")
+            return self.authenticate_client()
+
+        return access_token
 
 # Build headers for API requests
     def build_headers(self, access_token):
@@ -88,7 +92,7 @@ class SpotifyAPIClient:
 
 # Generate Spotify OAuth2 authorization URL.
     # This URL is used to redirect users to Spotify for authentication and authorization.
-    def get_auth_url(self, redirect_uri, scope=None, state=None):
+    def get_auth_url(self, redirect_uri, scope=None, state=None, show_dialog=False):
         """
         Generate Spotify OAuth2 authorization URL.
         """
@@ -102,6 +106,8 @@ class SpotifyAPIClient:
             params["scope"] = scope
         if state:
             params["state"] = state
+        if show_dialog:
+            params["show_dialog"] = "true"
 
         url = f"{self.AUTH_URL}?{urllib.parse.urlencode(params)}"
         logger.debug(f"Generated Spotify auth URL: {url}")
@@ -182,42 +188,38 @@ class SpotifyAPIClient:
             raise SpotifyAuthError("Failed to refresh user access token") from e
 
 
-    def search_artists_by_genre(self, genre, limit=20, access_token=None):
+    def search_artists_by_genre(self, genre, access_token, limit=20):
         """
         Search for artists by genre.
         """
         logger.info(f"SpotifyAPIClient.search_artists_by_genre('{genre}') called")
 
-        if not access_token:
-            raise SpotifyAuthError("search_artists_by_genre requires a valid access token")
+        # to properly encode the query: genre:"metal" -> genre%3A%22metal%22
+        query = f'genre:"{genre.lower()}"'
+        encoded_query = urllib.parse.quote(query)
 
-        genre_query = genre.replace(" ", "+").lower()
-        
-        url = f"{self.BASE_URL}/search?q=genre:%22{genre_query}%22&type=artist&limit={limit}"
-        
+        url = f"{self.BASE_URL}/search?q={encoded_query}&type=artist&limit={limit}"
+
         try:
             response = requests.get(url, headers=self.build_headers(access_token))
             response.raise_for_status()
             logger.debug(f"Search results: {response.json()}")
             return response.json()["artists"]["items"]
-        
+
         except requests.HTTPError as e:
             logger.error(f"HTTP error in search_artists_by_genre: {e.response.status_code} {e.response.text}")
             raise SpotifyRequestError(f"Failed to search artists: {e.response.status_code}") from e
-        
+
         except requests.RequestException as e:
             logger.exception("Network error during search_artists_by_genre")
             raise SpotifyRequestError("Network error during search_artists_by_genre") from e
 
 
-    def fetch_artist_details(self, artist_id, access_token=None):
+    def fetch_artist_details(self, artist_id, access_token):
         """
         Get details of a specific artist by Spotify ID.
         """
         logger.info(f"SpotifyAPIClient.fetch_artist_details('{artist_id}') called")
-
-        if not access_token:
-            raise SpotifyAuthError("fetch_artist_details requires a valid access token")
 
         url = f"{self.BASE_URL}/artists/{artist_id}"
         try:
@@ -234,14 +236,11 @@ class SpotifyAPIClient:
 
 # Get the current user's profile information using their access token - retrieved from `exchange_code_for_token()`.
     # This method retrieves the user's profile data from Spotify.
-    def get_user_profile(self, access_token=None):
+    def get_user_profile(self, access_token):
         """
         Fetch the current Spotify user's profile using their access token.
         """
         logger.info("SpotifyAPIClient.get_user_profile() called")
-
-        if not access_token:
-            raise SpotifyAuthError("get_user_profile requires a valid access token")
 
         url = f"{self.BASE_URL}/me"
 
@@ -261,14 +260,11 @@ class SpotifyAPIClient:
             raise SpotifyRequestError("Network error during get_user_profile") from e
 
 
-    def get_user_top_artists(self, access_token=None, limit=20, time_range="long_term"):
+    def get_user_top_artists(self, access_token, limit=20, time_range="long_term"):
         """
         Fetch user's top artists from Spotify API.
         """
         logger.info("SpotifyAPIClient.get_user_top_artists() called")
-        
-        if not access_token:
-            raise SpotifyAuthError("get_user_top_artists requires a valid access token")
 
         url = f"{self.BASE_URL}/me/top/artists?limit={limit}&time_range={time_range}"
         
