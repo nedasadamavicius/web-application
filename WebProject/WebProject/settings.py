@@ -39,9 +39,9 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379/1'
 from celery.schedules import crontab
 
 CELERY_BEAT_SCHEDULE = {
-    'refresh-spotify-genres-daily': {
-        'task': 'WebApplication.tasks.refresh_spotify_genres',
-        'schedule': crontab(hour=0, minute=0),  # every day at midnight
+    'refresh_client_token_hourly': {
+        'task': 'WebApplication.tasks.refresh_client_token',
+        'schedule': crontab(minute=0),  # every hour
     },
 }
 
