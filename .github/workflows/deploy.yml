@@ -19,10 +19,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch
-          git checkout dev
+      
+          git fetch origin
+      
+          git checkout dev || git checkout -b dev origin/dev
           git pull origin dev
-          git merge origin/main --no-edit
+      
+          git merge origin/main --allow-unrelated-histories --no-edit
           git push origin dev
 
       - name: Setup askpass and run deploy
