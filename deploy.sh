@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "DEBUG: SPOTIFY_ENV_PATH = $SPOTIFY_ENV_PATH"
+cp $SPOTIFY_ENV_PATH .env
 
 echo "🗑 Clearing host static files..."
 rm -rf /var/www/webapp/static
