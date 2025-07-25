@@ -1,23 +1,8 @@
 #!/bin/bash
 set -e
+echo "🚀 Starting deployment..."
 
-echo "Current dir: $(pwd)"
-echo "SPOTIFY_ENV_PATH = $SPOTIFY_ENV_PATH"
-
-echo "🔍 Checking .env creation..."
 cp "$SPOTIFY_ENV_PATH" .env
-
-if [[ -f .env ]]; then
-    echo "✅ .env successfully created"
-    cat .env
-else
-    echo "❌ ERROR: .env file not found after copy"
-    exit 1
-fi
-
-
-echo "📄 .env file contents:"
-cat .env
 
 echo "🗑 Clearing host static files..."
 rm -rf /var/www/webapp/static
