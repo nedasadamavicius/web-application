@@ -18,9 +18,14 @@ jobs:
       - name: Configure SSH for pushing
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/runner_deploy_key
+          chmod 600 ~/.ssh/runner_deploy_key
           ssh-keyscan github.com >> ~/.ssh/known_hosts
+      
+          echo "Host github.com
+            IdentityFile ~/.ssh/runner_deploy_key
+            IdentitiesOnly yes
+          " >> ~/.ssh/config
 
       - name: Merge main into dev
         run: |
