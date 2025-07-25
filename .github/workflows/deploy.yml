@@ -15,16 +15,24 @@ jobs:
         with:
           clean: false
       
+      - name: Configure SSH for pushing
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
       - name: Merge main into dev
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      
+
+          git remote set-url origin git@github.com:nedasadamavicius/spotify-explorer.git
+
           git fetch origin
-      
+
           git checkout dev || git checkout -b dev origin/dev
           git pull origin dev
-      
           git merge origin/main --allow-unrelated-histories --no-edit
           git push origin dev
 
