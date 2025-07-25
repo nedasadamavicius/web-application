@@ -1,4 +1,4 @@
-name: deploy on push to main
+name: Deploy on push to main
 
 on:
   push:
@@ -12,13 +12,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
-      - name: print whoami and realpath of deploy script
-        run: |
-          whoami
-          pwd
-          realpath ./deploy.sh
-          ls -l ./deploy.sh
 
-      - name: Run deployment script
-        run: sudo ./deploy.sh
+      - name: Setup askpass and run deploy
+        env:
+          SUDO_ASKPASS: /tmp/askpass.sh
+        run: |
+          echo "${{ secrets.SUDO_PASSWORD }}" > /tmp/sudo_pass
+          chmod 600 /tmp/sudo_pass
+
+          echo '#!/bin/sh' > /tmp/askpass.sh
+          echo 'cat /tmp/sudo_pass' >> /tmp/askpass.sh
+          chmod +x /tmp/askpass.sh
+
+          sudo -A ./deploy.sh
