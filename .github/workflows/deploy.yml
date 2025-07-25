@@ -26,14 +26,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-<<<<<<< HEAD
-      
-          git fetch origin
-      
-          git checkout dev || git checkout -b dev origin/dev
-          git pull origin dev
-      
-=======
 
           git remote set-url origin git@github.com:nedasadamavicius/spotify-explorer.git
 
@@ -41,7 +33,6 @@ jobs:
 
           git checkout dev || git checkout -b dev origin/dev
           git pull origin dev
->>>>>>> 0b88ac8 (add git action ssh for pushing)
           git merge origin/main --allow-unrelated-histories --no-edit
           git push origin dev
 
