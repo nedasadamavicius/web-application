@@ -53,4 +53,4 @@ jobs:
           echo 'cat /tmp/sudo_pass' >> /tmp/askpass.sh
           chmod +x /tmp/askpass.sh
 
-          sudo -A ./deploy.sh
+          sudo -AE ./deploy.sh
