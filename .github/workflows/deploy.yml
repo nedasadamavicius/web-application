@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    env:
+      SPOTIFY_ENV_PATH: ${{ vars.SPOTIFY_ENV_PATH }}
 
     steps:
       - name: Checkout repository
