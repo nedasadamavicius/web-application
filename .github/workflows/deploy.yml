@@ -1,0 +1,17 @@
+name: deploy on push to main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run deployment script
+        run: sudo ./deploy.sh
