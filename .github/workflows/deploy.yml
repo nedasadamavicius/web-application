@@ -8,8 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-    env:
-      SPOTIFY_ENV_PATH: ${{ vars.SPOTIFY_ENV_PATH }}
 
     steps:
       - name: Checkout repository
@@ -46,6 +44,7 @@ jobs:
       - name: Setup askpass and run deploy
         env:
           SUDO_ASKPASS: /tmp/askpass.sh
+          SPOTIFY_ENV_PATH: ${{ vars.SPOTIFY_ENV_PATH }}
         run: |
           echo "${{ secrets.SUDO_PASSWORD }}" > /tmp/sudo_pass
           chmod 600 /tmp/sudo_pass
