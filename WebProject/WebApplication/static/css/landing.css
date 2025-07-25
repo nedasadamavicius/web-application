@@ -27,6 +27,7 @@
         height: 25px; /* Small icon */
         margin-right: 6px;
     }
+
     /* -----MAIN CONTENT----- */
     body .container main {
         grid-area: main;
@@ -109,6 +110,58 @@
         color: white;
     }
     /* -----MAIN CONTENT----- */
+
+    .error-box {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+    }
+
+    .error-box p {
+        color: black !important;
+    }
+}
+
+/* CSS for Mobile environments */
+@media (max-width: 800px) {
+    .container {
+        grid-template-rows: 10vh 10vh 70vh 10vh;
+    }
+
+        header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .spotify-login-button {
+        display: inline-flex;
+        align-items: center;
+        background-color: #D65555;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        padding: 4px 10px; /* 🔥 Reduce padding for slimmer button */
+        border-radius: 20px; /* Rounder edges */
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        margin-top: 33px;
+        margin-right: 4px;
+    }
+
+    .spotify-login-button:hover {
+        background-color: #b44848;
+        transform: translateY(-1px); /* subtle hover pop */
+    }
+
+    .spotify-icon {
+        height: 25px; /* Small icon */
+        margin-right: 6px;
+    }
+
     .error-box {
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;

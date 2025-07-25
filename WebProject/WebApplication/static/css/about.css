@@ -1,13 +1,35 @@
-body .container main {
-    grid-area: main;
-    padding-left: 6px;
-    height: auto;
-    max-height: 100vh;
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
-}
 
-body .container main h1, h2, p {
-    color: white;
+    header {
+        display: flex;
+        justify-content: space-between;
+        grid-area: header;
+    }
+
+    body .container main {
+        grid-area: main;
+        padding-left: 6px;
+        height: auto;
+        max-height: 100vh;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    body .container main h1, h2, p {
+        color: white;
+    }
+
+@media (max-width: 800px) {
+    .container {
+        grid-template-areas:
+            'header'
+            'nav'
+            'main'
+            'footer';
+        grid-template-rows: 5vh 8vh 79vh 10vh;
+    }
+
+    body .container main h1, h2, p, a {
+        color: white;
+    }
 }

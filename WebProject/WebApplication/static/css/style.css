@@ -147,21 +147,21 @@ body {
             'main'
             'footer';
         grid-template-columns: 1fr;
-        grid-template-rows: 4vh 10vh 78vh 8vh;
+        grid-template-rows: 8vh 8vh 80vh 4vh;
         width: 100%;
         min-height: 100vh;
         box-sizing: border-box;
         overflow: hidden;
     }
 
-    .container header img {
+    .container header .header-left img {
         display: none;
     }
 
     nav {
         grid-area: nav;
         background-color: #333;
-        padding: 5px;
+        padding: 3px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -213,6 +213,10 @@ body {
         overflow: hidden;
         scrollbar-color: darkred transparent;
         scrollbar-width: thin;
+    }
+
+    main .main-header p {
+        margin: 5px;
     }
 
     main .scrollable-content {

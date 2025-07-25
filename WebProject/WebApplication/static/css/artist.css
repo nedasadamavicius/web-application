@@ -36,3 +36,14 @@
         color: black !important;
     }
 }
+
+@media (max-width: 800px) {
+    .container {
+        grid-template-areas:
+            'header'
+            'nav'
+            'main'
+            'footer';
+        grid-template-rows: 5vh 8vh 78vh 11vh;
+    }
+}
