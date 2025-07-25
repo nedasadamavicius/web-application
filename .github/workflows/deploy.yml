@@ -12,6 +12,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      - name: print whoami and realpath of deploy script
+        run: |
+          whoami
+          pwd
+          realpath ./deploy.sh
+          ls -l ./deploy.sh
 
       - name: Run deployment script
         run: sudo ./deploy.sh
